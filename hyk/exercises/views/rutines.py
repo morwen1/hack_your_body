@@ -27,9 +27,17 @@ class RutineViewset(context_views,viewsets.ModelViewSet):
         queryset = []
         if self.action in ['list' , 'retrieve']:
             queryset = Rutine.objects.all()
+
         if self.action in ['create' , 'update' , 'partial_update' ,'add_exercises' ,'remove_exercises']:
             profile = Profile.objects.get(user = self.request.user)
             queryset = Rutine.objects.filter(created_of = profile)
+        
+        if queryset != []:
+            queryset = queryset.prefetch_related(
+                Prefetch('exercises') , 
+                Prefetch('created_of')
+            )
+        
         return queryset
 
     def get_serializer_class(self):
