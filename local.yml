@@ -1,0 +1,71 @@
+version: '2'
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: hyk_local_django
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: hyk_production_postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - "6500:5432"
+  redis:
+    image: redis:5.0
+
+  celeryworker:
+    <<: *django
+    image: hyk_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+      
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: hyk_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+      
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: hyk_local_flower
+    ports:
+      - "5555:5555"
+    command: /start-flower
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    depends_on:
+      - django
+    ports:
+      - "8021:5555"
