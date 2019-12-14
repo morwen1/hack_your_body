@@ -17,7 +17,7 @@ class Rutine (HybModel):
     name = models.CharField(max_length=255)
     exercises = models.ManyToManyField(to='exercises.Exercises')
     description = models.TextField()
-    info_rutine = models.OneToOneField(to=Info_rutine ,on_delete=models.CASCADE)
+    info_rutine = models.ForeignKey(to=Info_rutine , null=True,on_delete=models.CASCADE)
     info_month = models.ManyToManyField(to=Info_Month )
     sessions = models.ManyToManyField(
         to=Profile ,
@@ -27,4 +27,4 @@ class Rutine (HybModel):
     )
 
     def __str__(self):
-        return f"{created_of},{name}"
+        return f" created of: {self.created_of}, name: {self.name}"

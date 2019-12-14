@@ -1,6 +1,6 @@
 from rest_framework import serializers
 #serializers
-from hyk.users.serializers import ProfileSerializer
+from hyk.users.serializers import ProfileSerializerListExtra
 #models
 from hyk.exercises.models import InstructionsExercises ,Exercises
 from hyk.users.models import Profile
@@ -14,7 +14,7 @@ class InstructionsSerializers(serializers.ModelSerializer):
 
 class ExercisesSerializer(serializers.ModelSerializer):
     instructions = InstructionsSerializers()
-    created_of = ProfileSerializer(read_only=True)
+    created_of = ProfileSerializerListExtra(read_only=True)
     class Meta:
         model= Exercises
         fields = ('id', 'name' ,'description','instructions' ,'created_of' , 'created')

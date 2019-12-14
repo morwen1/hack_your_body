@@ -16,11 +16,19 @@ class ProfileSerializer (serializers.ModelSerializer):
         fields = ('__all__')
 
 
+class ProfileSerializerListExtra (serializers.ModelSerializer):
+    user = UserSerializer(read_only =True , many = False)
+    class Meta:
+        model = Profile
+        fields = ('id' , 'user' ,'atlhetic_discipline')
+
+
+
 class ProfileSerializerCreate (serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = (
-            'weigth',
+            'weight',
             'height',
             'imc',
             'atlhetic_discipline'

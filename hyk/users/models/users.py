@@ -22,6 +22,5 @@ class Profile (models.Model):
     height = models.SmallIntegerField(help_text="height in cms" , null=True)
     imc = models.IntegerField(default=0)
     atlhetic_discipline = models.CharField(max_length=255 , null =True)
-    sessions = models.ManyToManyField(to='exercises.Rutine' ,through="exercises.Sessions"  , through_fields = ('session_profile' ,'session_rutines' ))
-    
+    rutines = models.ManyToManyField(to = 'exercises.Rutine')
     
