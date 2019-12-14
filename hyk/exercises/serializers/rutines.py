@@ -59,3 +59,26 @@ class RutineSerializerAddExercise(serializers.Serializer):
         return data
 
 
+
+
+
+
+class ProfileAddRutineSerializer(serializers.Serializer):
+    rutine = serializers.IntegerField(min_value = 0)
+
+
+    def validate_rutine (self , data):
+        id_rutine = data 
+
+        try :
+            rutine = Rutine.objects.filter(id=id_rutine)
+            
+            if len(rutine) == 0 :
+                raise serializers.ValidationError('rutine not exist :c ')
+        except :
+            raise serializers.ValidationError('rutine not exist :c ')
+       
+
+        return data
+
+

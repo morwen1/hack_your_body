@@ -1,9 +1,12 @@
 from rest_framework import serializers
 #serializers
 from hyk.users.serializers import ProfileSerializerListExtra
+
 #models
 from hyk.exercises.models import InstructionsExercises ,Exercises
 from hyk.users.models import Profile
+
+
 
 class InstructionsSerializers(serializers.ModelSerializer):
     class Meta:
