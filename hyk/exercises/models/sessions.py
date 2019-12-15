@@ -26,7 +26,7 @@ class Sessions(HybModel):
         related_name ='session_rutines',
         to=Rutine , on_delete=None
     )
-    info_session =models.ForeignKey(to=Info_Sessions , on_delete=models.CASCADE)
+    info_session =models.ForeignKey(to=Info_Sessions , null =True, on_delete=models.CASCADE)
     duration = models.TimeField()
     def __str__(self):
         return f"{session_profile__user_email} , {session_rutines}"

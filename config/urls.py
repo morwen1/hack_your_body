@@ -15,6 +15,7 @@ urlpatterns = [
     # User management
     path("users/", include("hyk.users.urls", namespace="users")),
     path("exercises/" , include("hyk.exercises.urls" , namespace ="exercises")),
+    path("sessions/" , include(("hyk.sessions_app.urls" , 'sessions_app' ) , namespace="sessions")),#,namespace='sessions_app'
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

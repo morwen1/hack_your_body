@@ -77,6 +77,7 @@ LOCAL_APPS = [
     "hyk.users.apps.UsersConfig",
     "hyk.exercises",
     "hyk.information",
+    "hyk.sessions_app",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
