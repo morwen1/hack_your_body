@@ -1,0 +1,5 @@
+[run]
+include = hyk/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
