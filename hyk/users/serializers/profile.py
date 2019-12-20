@@ -12,10 +12,14 @@ from hyk.users.models import Profile
 
 
 
-
+class RutineRelatedProfile(serializers.RelatedField):
+    def to_representation(self, value):
+        return {"id" : value.id , "name" : value.name}
+    
 
 class ProfileSerializer (serializers.ModelSerializer):
     user = UserSerializer(read_only =True , many = False)
+    rutines = RutineRelatedProfile(read_only=True , many=True)
     class Meta:
         model = Profile
         fields = ('__all__')
