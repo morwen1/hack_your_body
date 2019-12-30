@@ -1,6 +1,7 @@
 import datetime
 #django
 from django.db.models import Q
+from django.db.models import Prefetch
 # rest framework
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
@@ -8,6 +9,7 @@ from rest_framework import serializers
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import filters
 
 # models
 from hyk.users.models import Profile
@@ -47,15 +49,27 @@ class SessionsViewset(
         return super(SessionsViewset, self).dispatch(request, *args, **kwargs)
 
     permission_classes = [IsAuthenticated, ]
+    filter_backends = (filters.SearchFilter,filters.OrderingFilter,)
+    search_fields = ( 'session_rutines__name',)
+    ordering_fields= ('created' , )
 
     def get_queryset(self):
         queryset=[]
-        if self.action in ['list', 'retrieve', 'create']:
+        if self.action in ['list', 'retrieve', 'create' ]:
             queryset = Sessions.objects.filter(session_profile=self.profile)
 
         else :
+            """
+            solo puedo hacer update una sola vez para evitar que se cambie 
+            el duration
+            """
             initial_time = datetime.time()
             queryset=Sessions.objects.filter(Q(session_profile=self.profile) & Q(duration=initial_time))
+        if queryset != []:
+            queryset.prefetch_related(
+                Prefetch('session_rutines'), 
+                Prefetch('session_profiles')
+                )
 
         return queryset
 

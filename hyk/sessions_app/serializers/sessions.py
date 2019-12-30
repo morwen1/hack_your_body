@@ -1,4 +1,6 @@
 #rest framework
+import datetime
+
 from rest_framework import serializers
 
 
@@ -9,6 +11,7 @@ from hyk.exercises.serializers import RutineSerializerList ,ProfileSerializerLis
 #models
 from hyk.exercises.models import Sessions
 from hyk.users.models import Profile
+from hyk.information.models import Info_Sessions
 
 
 
@@ -29,11 +32,14 @@ class SessionsSerializerCreate(serializers.ModelSerializer):
         fields =('id'  ,'session_rutines' , 'duration')
 
     def create(self , validate_data):
+        info_session = Info_Sessions.objects.create(time = datetime.time())
+        info_session.save()
         profile = Profile.objects.get(user=self.context['request'].user)
         session =Sessions.objects.create(
             session_profile = profile , 
             session_rutines=validate_data['session_rutines'],
-            duration = validate_data['duration']
+            duration = validate_data['duration'],
+            info_session = info_session,
             )
         session.save()
         return session
@@ -54,4 +60,6 @@ class SessionsSerializer(serializers.ModelSerializer):
             'id' , 
             'session_profile' ,
             'session_rutines' , 
-            'created')
+            'duration',
+            'created',
+            )

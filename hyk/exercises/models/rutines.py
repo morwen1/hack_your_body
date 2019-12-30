@@ -27,4 +27,4 @@ class Rutine (HybModel):
     )
 
     def __str__(self):
-        return f" created of: {self.created_of}, name: {self.name}"
+        return f" created of: {self.created_of}, name: {self.name}" 

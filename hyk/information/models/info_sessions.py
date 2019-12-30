@@ -6,5 +6,5 @@ from .Info_abstract import Info
 
 
 class Info_Sessions (Info) :
-    time = models.TimeField()
-    intensity = models.IntegerField()
+    time = models.TimeField(null=True)
+    intensity = models.IntegerField(null=True)

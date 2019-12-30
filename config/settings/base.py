@@ -54,6 +54,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 # APPS
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
+    "channels",
+    "channels_redis",
+
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -134,6 +137,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    #"hyk.middlewares.channels_middleware.token_auth",
 ]
 
 # STATIC
@@ -285,6 +289,8 @@ SOCIALACCOUNT_ADAPTER = "hyk.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -295,4 +301,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',    
     ]
+}
+
+ASGI_APPLICATION="hyk.routing.application"
+
+CHANNEL_LAYERS = {
+'default': {
+    'BACKEND': 'channels_redis.core.RedisChannelLayer',
+    'CONFIG': {
+        "hosts": [env("REDIS_URL"),],
+        },
+    },
 }

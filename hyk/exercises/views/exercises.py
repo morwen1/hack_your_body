@@ -50,7 +50,7 @@ class ExercisesViewset(
         if queryset != []:
             queryset.prefetch_related(Prefetch('instructions'))
         return queryset
-
+ 
     def get_permissions(self):
         permissions = []
         if self.action == 'list':
