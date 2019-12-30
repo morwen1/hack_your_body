@@ -22,6 +22,8 @@ RUN apk add --no-cache python3-dev libstdc++ && \
     pip3 install pandas
 
 
+RUN pip3 install postgis
+
 
 
 
