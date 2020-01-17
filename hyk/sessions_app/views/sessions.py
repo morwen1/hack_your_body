@@ -26,6 +26,7 @@ class SessionsViewset(
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet):
+    
     """
         /sessions/{id_profile}/session/
         listing, creating
@@ -43,9 +44,8 @@ class SessionsViewset(
     """
 
     def dispatch(self, request, *args, **kwargs):
-
-        self.profile = get_object_or_404(Profile, user=int(kwargs['profile']))
-
+        self.profile = get_object_or_404(Profile, id=int(kwargs['profile']))
+        print(self.profile)
         return super(SessionsViewset, self).dispatch(request, *args, **kwargs)
 
     permission_classes = [IsAuthenticated, ]

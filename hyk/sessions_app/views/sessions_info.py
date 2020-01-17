@@ -1,4 +1,5 @@
 #restframework
+from rest_framework import serializers
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.mixins import UpdateModelMixin , ListModelMixin , RetrieveModelMixin
 from rest_framework.generics import get_object_or_404
@@ -36,6 +37,7 @@ class SessionInfoViewset(
             queryset = Info_Sessions.objects.filter(id=self.session.info_session.id)
         else :
             queryset = []
+            raise serializers.ValidationError("you are not owned in this session")
         return queryset
     
 

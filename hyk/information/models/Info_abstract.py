@@ -17,7 +17,6 @@ class Info ( HybModel):
     kmr=models.IntegerField(null=True)
     ptRute=models.IntegerField(null=True)
     cals_burn = models.IntegerField(null=True)
-    kmR = models.IntegerField(null=True)
     dur_time = models.TimeField(null=True)
     
     class Meta:

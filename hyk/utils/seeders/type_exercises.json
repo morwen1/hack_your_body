@@ -1,0 +1,29 @@
+[
+    {
+        "model": "exercises.ExercisesType",
+        "pk": 1,
+        "fields": {
+            "exercise_type": "potencia",
+            "information_type": "este tipo de ejercicio son los que dasarrollan rappkez en la ejecucion del ejercicio",
+            "created":"2019-09-08 19:18:00"
+        }
+    },
+    {
+        "model": "exercises.ExercisesType",
+        "pk": 2,
+        "fields": {
+            "exercise_type": "fuerza",
+            "information_type": "este tipo de ejercicio son los que desarrollan fuerza muscular",
+            "created":"2019-09-08 19:18:00"
+        }
+    },
+    {
+        "model": "exercises.ExercisesType",
+        "pk": 3,
+        "fields": {
+            "exercise_type": "resistencia",
+            "information_type": "este tipo de ejercicio son los que desarrollan la prolongacion de la ejecucion del ejercicio",
+            "created":"2019-09-08 19:18:00"
+        }
+    }
+]

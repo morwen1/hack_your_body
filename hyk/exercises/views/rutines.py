@@ -51,7 +51,6 @@ class RutineViewset(context_views,viewsets.ModelViewSet):
     def add_exercises(self, request , pk ):
         queryset = self.get_queryset()
 
-
         try:
             rutine = queryset.get(id=pk)
         except:

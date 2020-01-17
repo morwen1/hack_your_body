@@ -40,3 +40,11 @@ class ExercisesSerializerCreate(serializers.ModelSerializer):
         instructions.save()
         exercise.save()
         return exercise
+
+class ExercisesSerializerUpdate(serializers.ModelSerializer):
+    class Meta:
+        model= Exercises
+        fields = ('name' ,'description')
+        
+
+

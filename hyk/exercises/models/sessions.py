@@ -30,4 +30,4 @@ class Sessions(HybModel):
     info_session =models.ForeignKey(to=Info_Sessions , null =True, on_delete=models.CASCADE)
     duration = models.TimeField()
     def __str__(self):
-        return f"{self.session_profile} , {self.session_rutines}"
+        return f"session_profile {self.session_profile} ,session_rutine {self.session_rutines}"

@@ -12,6 +12,12 @@ class Rutine (HybModel):
     """
     Este modelo refleja las rutinas creadas por un perfil 
     una rutina tiene varios ejercicios y una informacion por mes y por rutina
+    *ejecucion de la rutina en ciclos :
+        cuantas veces debo hacer un ejercicio , si al ejecutarlo tiene un tiempo limite,
+        y el orden en que se debe hacer la rutina
+        
+        
+
     """
     created_of = models.ForeignKey( related_name='created_of',to=Profile , on_delete = None)
     name = models.CharField(max_length=255)
