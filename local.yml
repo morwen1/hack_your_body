@@ -5,6 +5,7 @@ volumes:
   local_postgres_data_backups: {}
 
 services:
+  
   django: &django
     build:
       context: .
@@ -35,6 +36,8 @@ services:
       - "6500:5432"
   redis:
     image: redis:5.0
+    ports : 
+      - "6379:6379"
 
   celeryworker:
     <<: *django

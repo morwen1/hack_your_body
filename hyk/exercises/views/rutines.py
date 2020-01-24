@@ -21,6 +21,7 @@ from hyk.exercises.views.mixins_views import context_views
 class RutineViewset(context_views,viewsets.ModelViewSet):
 
     
+    
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

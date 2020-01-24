@@ -22,6 +22,8 @@ RUN apk add --no-cache python3-dev libstdc++ && \
     pip3 install pandas
 
 
+RUN pip3 install postgis
+
 
 
 
@@ -35,7 +37,7 @@ RUN chmod +x /entrypoint
 
 COPY ./compose/local/django/start /start
 RUN sed -i 's/\r$//g' /start
-RUN chmod +x /start
+RUN chmod +x /start 
 
 COPY ./compose/local/django/celery/worker/start /start-celeryworker
 RUN sed -i 's/\r$//g' /start-celeryworker
