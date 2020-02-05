@@ -12,5 +12,7 @@ func Router() *mux.Router {
 	r.HandleFunc("/tracking_id", TrackingLocation).Methods("POST")
 	r.HandleFunc("/searchusers", SearchUserLocation).Methods("POST")
 	r.HandleFunc("/deleteloc", DeleteLocationUser).Methods("DELETE")
+	r.HandleFunc("/newrace", NewRace).Methods("Post")
+	r.HandleFunc("/ws/{id_race}/{token}", HandleConnections)
 	return r
 }

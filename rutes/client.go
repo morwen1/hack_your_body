@@ -4,6 +4,9 @@ import (
 	"log"
 	"sync"
 
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+
 	"github.com/go-redis/redis"
 )
 
@@ -28,5 +31,18 @@ func GetRedisClient() *RedisClient {
 		log.Fatalf("Could not connect to redis %v", err)
 	}
 	return redisClient
+
+}
+
+func ClientPsql() *gorm.DB {
+
+	db, err := gorm.Open("postgres", "host=0.0.0.0 port=6500 user=debug dbname=hyk password=debug sslmode=disable")
+	if err != nil {
+		log.Println("error to connect to postgres db :", err)
+
+	}
+	db.SingularTable(true)
+	db.LogMode(true)
+	return db
 
 }
