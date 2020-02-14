@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
+	"sync"
 
 	"github.com/go-redis/redis"
 
@@ -12,14 +14,24 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var clients = make(map[*websocket.Conn]bool) //clients
+type CLientTemp struct {
+	wsClient  *websocket.Conn
+	urlClient *url.URL
+	IdRace    string
+	TokenUSer string
+}
+
+var clients = make(map[*CLientTemp]bool) //clients
+var pool sync.Pool
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	WriteBufferPool: &pool,
 }
 
 //modelos del mensaje message {request : {posclient , route} , response :{posclient  , point  }
+
 type PosClient struct {
 	Lat float64 `json:"lat"`
 	Lng float64 `json:"lng"`
@@ -44,11 +56,14 @@ var message = make(chan Message)
 
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	log.Println(r.URL)
 
 	//connect with redis and obtain all the tokens
 	idRace := vars["id_race"]
 	token := vars["token"]
 	clientredis := GetRedisClient()
+	event := clientredis.GetEvent(idRace)
+
 	racers := clientredis.GetRunners(idRace)
 
 	//verify the tokens in the request
@@ -62,23 +77,27 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	ws, err := upgrader.Upgrade(w, r, nil)
 	//log.Println(found, token, idRace, racers)
+	urlClient := r.URL
+	clientConn := &CLientTemp{wsClient: ws, urlClient: urlClient, IdRace: idRace, TokenUSer: token}
 	if found == false {
 		ws.Close()
 	}
-
+	if event != "Event Active" {
+		ws.Close()
+	}
 	log.Println(" WS connection")
 	if err != nil {
 		log.Println("error while try to read request , error:", err)
 	}
 	defer ws.Close()
 
-	clients[ws] = true
+	clients[clientConn] = true
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			log.Println("error while read json request %v", err)
-			delete(clients, ws)
+			delete(clients, clientConn)
 			break
 		}
 		clientredis.AddRacersLocation(idRace, msg.RequestMessage.PosClient.Lat, msg.RequestMessage.PosClient.Lng)
@@ -97,13 +116,14 @@ func HandleMessage() {
 		msg := <-message
 
 		for client := range clients {
+			if msg.ID == client.IdRace {
+				err := client.wsClient.WriteJSON(msg)
+				if err != nil {
+					log.Println("error sendig msg %v", err)
+					client.wsClient.Close()
+					delete(clients, client)
+				}
 
-			err := client.WriteJSON(msg)
-
-			if err != nil {
-				log.Println("error sendig msg %v", err)
-				client.Close()
-				delete(clients, client)
 			}
 
 		}

@@ -22,7 +22,7 @@ func main() {
 		logsCmd := "listening"
 
 		log.Println(logsCmd)
-		time.Sleep(1 * time.Minute)
+		time.Sleep(3 * time.Minute)
 		if logsCmd == "listening......" {
 			logsCmd = "listening"
 		} else {

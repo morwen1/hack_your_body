@@ -17,6 +17,10 @@ class User(AbstractUser):
     
 
 class Profile (models.Model):
+    """
+    Model to profile of the user the profile have 
+    important information como heigth and weigth
+    """
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     weight = models.SmallIntegerField( help_text="weigth in kg",null=True)
     height = models.SmallIntegerField(help_text="height in cms" , null=True)

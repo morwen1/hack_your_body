@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import action
 # serializer
-from hyk.users.serializers import ProfileSerializer, ProfileSerializerCreate , ProfileSerializerALL
+from hyk.users.serializers import ProfileSerializer, ProfileSerializerCreate, ProfileSerializerALL
 from hyk.exercises.serializers import ProfileAddRutineSerializer
 # models
 from hyk.users.models import Profile
@@ -16,6 +16,14 @@ class ProfileViewset(
         mixins.UpdateModelMixin,
         mixins.ListModelMixin,
         viewsets.GenericViewSet):
+    """ 
+        Actions : 
+            List ,Update , PartialUpdate
+        Methods : 
+             PUT ,PATCH , GET 
+        Return :
+            Profile of the user           
+    """
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -51,7 +59,7 @@ class ProfileViewset(
 
         return Response(data=ProfileSerializerALL(profile).data)
 
-    @action(detail=False,methods=['post'])
+    @action(detail=False, methods=['post'])
     def remove_rutines(self, request):
         profile = Profile.objects.get(user=request.user)
         serializer = ProfileAddRutineSerializer(data=request.data)

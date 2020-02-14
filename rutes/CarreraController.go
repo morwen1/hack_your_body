@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-redis/redis"
 )
@@ -15,8 +16,10 @@ type Runners struct {
 }
 type Race struct {
 	ID          string    `json:"id"`
+	Ruta        string    `json:"ruta"`
 	CreatedOf   string    `json:"created_of"`
 	RunnersRace []Runners `json:"runners"`
+	//conf the date dateOf       `json :"date_of"`
 }
 
 func (c *RedisClient) AddRacers(key string, runners []Runners) {
@@ -28,6 +31,18 @@ func (c *RedisClient) AddRacers(key string, runners []Runners) {
 			runners[i].Token,
 		)
 	}
+}
+
+func (c *RedisClient) EventRaceAndRute(keyRace string, routeId string, duration time.Duration) {
+	vars := []string{":route", ":event"}
+	c.Set(keyRace+vars[0], routeId, duration)
+	c.Set(keyRace+vars[1], "Event Active", duration)
+}
+func (c *RedisClient) GetEvent(keyRace string) string {
+	race := keyRace + ":event"
+	event, err := c.Get(race).Result()
+	log.Println(race, event, err)
+	return event
 }
 
 func (c *RedisClient) GetRunners(idRace string) []string {
@@ -45,6 +60,8 @@ func (c *RedisClient) AddRacersLocation(idRace string, lat float64, lng float64)
 func (c *RedisClient) GetRacers(idRace string, lat float64, lng float64) []redis.GeoLocation {
 	idRace = idRace + ":racerslocation"
 	racers := c.SearchUsers(600, lat, lng, 20.0)
+	log.Println("get racers ", racers)
+
 	return racers
 
 }
@@ -79,8 +96,12 @@ func NewRace(w http.ResponseWriter, r *http.Request) {
 	}
 
 	clientredis := GetRedisClient()
-	clientredis.AddRacers(RaceData.ID, RaceData.RunnersRace)
 
+	//add racers in redis db
+
+	clientredis.AddRacers(RaceData.ID, RaceData.RunnersRace)
+	durationRace, _ := time.ParseDuration("20m")                           //duration of the race in redis
+	clientredis.EventRaceAndRute(RaceData.ID, RaceData.Ruta, durationRace) //create event race
 	w.Header().Set("Content-Type", "aplication/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(&RaceData)
