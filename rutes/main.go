@@ -1,26 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 )
 
 func main() {
 
-	client := GetRedisClient()
-	fmt.Println(client, "client redis up")
+	clientredis := GetRedisClient()
 	clientpsql := ClientPsql()
-	fmt.Println(clientpsql, "client psql up")
+	if clientredis != nil && clientpsql != nil {
+		log.Println("client redis up")
+		log.Println("client psql up")
+	} else {
+		log.Panic("databases not available")
+	}
 	r := Router()
 	server := Server(r, "0.0.0.0:8010")
 
 	go server.ListenAndServe()
 	log.Println("running server....")
 	go HandleMessage()
+	logsCmd := "listening"
 	for {
-		logsCmd := "listening"
-
 		log.Println(logsCmd)
 		time.Sleep(3 * time.Minute)
 		if logsCmd == "listening......" {

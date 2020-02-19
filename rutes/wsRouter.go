@@ -4,22 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"sync"
-
-	"github.com/go-redis/redis"
 
 	"github.com/gorilla/mux"
 
 	"github.com/gorilla/websocket"
 )
-
-type CLientTemp struct {
-	wsClient  *websocket.Conn
-	urlClient *url.URL
-	IdRace    string
-	TokenUSer string
-}
 
 var clients = make(map[*CLientTemp]bool) //clients
 var pool sync.Pool
@@ -32,33 +22,13 @@ var upgrader = websocket.Upgrader{
 
 //modelos del mensaje message {request : {posclient , route} , response :{posclient  , point  }
 
-type PosClient struct {
-	Lat float64 `json:"lat"`
-	Lng float64 `json:"lng"`
-}
-type Response struct {
-	PosRacers    []redis.GeoLocation `json:"posclient"`
-	Point        float64             `json:"point"`
-	CloseRunners int                 `json:"closerunners"`
-}
-type Request struct {
-	PosClient PosClient `json:"posclient"`
-	RouteName string    `json:"route"`
-}
-
-type Message struct {
-	ID              string   `json:"id"`
-	RequestMessage  Request  `json:"request"`
-	ResponseMessage Response `json:"response"`
-}
-
 var message = make(chan Message)
 
 func HandleConnections(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	log.Println(r.URL)
 
-	//connect with redis and obtain all the tokens
+	//connect with redis and obtain all the tokens and the users
 	idRace := vars["id_race"]
 	token := vars["token"]
 	clientredis := GetRedisClient()
@@ -66,7 +36,7 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	racers := clientredis.GetRunners(idRace)
 
-	//verify the tokens in the request
+	//verify the users tokens in the request
 	found := false
 	for _, i := range racers {
 		if i == token {
@@ -75,24 +45,26 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	//creating the upgrader
 	ws, err := upgrader.Upgrade(w, r, nil)
-	//log.Println(found, token, idRace, racers)
 	urlClient := r.URL
 	clientConn := &CLientTemp{wsClient: ws, urlClient: urlClient, IdRace: idRace, TokenUSer: token}
-	if found == false {
+	// verify the user token and event
+	if found == false || event != "Event Active" {
 		ws.Close()
 	}
-	if event != "Event Active" {
-		ws.Close()
-	}
-	log.Println(" WS connection")
+
 	if err != nil {
 		log.Println("error while try to read request , error:", err)
 	}
 	defer ws.Close()
 
-	clients[clientConn] = true
+	log.Println(" WS connection succesfull")
+
+	clients[clientConn] = true //add to map clients new client
+
 	for {
+
 		var msg Message
 		err := ws.ReadJSON(&msg)
 		if err != nil {
@@ -101,15 +73,16 @@ func HandleConnections(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		clientredis.AddRacersLocation(idRace, msg.RequestMessage.PosClient.Lat, msg.RequestMessage.PosClient.Lng)
-		racers := clientredis.GetRacers(idRace, msg.RequestMessage.PosClient.Lat, msg.RequestMessage.PosClient.Lng)
+		racers := clientredis.GetRacersLocation(idRace, msg.RequestMessage.PosClient.Lat, msg.RequestMessage.PosClient.Lng)
 		msg.ResponseMessage.PosRacers = racers
 		msg.ResponseMessage.CloseRunners = len(racers)
-		fmt.Println(msg)
-		message <- msg
+		fmt.Println("message request ", msg)
+		message <- msg //sending the mesage to the handler message
 	}
 
 }
 
+//handler manage messages between clients and evita
 func HandleMessage() {
 
 	for {

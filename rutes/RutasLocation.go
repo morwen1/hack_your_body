@@ -16,7 +16,7 @@ type Point struct {
 }
 
 func (c *RedisClient) CreateRute(route Route) {
-
+	//creating route in redis
 	for i := 0; i < len(route.Points); i++ {
 		c.GeoAdd(
 			route.Name,

@@ -15,7 +15,7 @@ func AddLocationUser(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		log.Println("can not decode that request %v", err)
-		http.Error(w, "mano no puedo lee esa vaina", http.StatusBadRequest)
+		http.Error(w, "invalid json", http.StatusBadRequest)
 		return
 
 	}
@@ -24,8 +24,8 @@ func AddLocationUser(w http.ResponseWriter, r *http.Request) {
 	return
 	data, err := json.Marshal(user)
 	if err != nil {
-		http.Error(w, "mano mala mia pero el json ta caido XD", http.StatusInternalServerError)
-		log.Println("mano mala mia pero el json ta caido XD")
+		http.Error(w, "can not read the request", http.StatusInternalServerError)
+		log.Println("can not read the request")
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -69,8 +69,8 @@ func SearchUserLocation(w http.ResponseWriter, r *http.Request) {
 	datausers := rClient.SearchUsers(body.Limit, body.Lat, body.Lng, 15000)
 	data, err := json.Marshal(datausers)
 	if err != nil {
-		http.Error(w, "mano mala mia pero el json ta caido XD", http.StatusInternalServerError)
-		log.Println("mano mala mia pero el json ta caido XD")
+		http.Error(w, "can not read the request", http.StatusInternalServerError)
+		log.Println("can not read the request")
 		return
 	}
 
@@ -98,8 +98,8 @@ func TrackingLocation(w http.ResponseWriter, r *http.Request) {
 	data, err := json.Marshal(datausers)
 
 	if err != nil {
-		http.Error(w, "mano mala mia pero el json ta caido XD", http.StatusInternalServerError)
-		log.Println("mano mala mia pero el json ta caido XD")
+		http.Error(w, "can not read the request", http.StatusInternalServerError)
+		log.Println("can not read the request")
 		return
 	}
 

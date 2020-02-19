@@ -2,6 +2,11 @@
 FROM Golang
 
 RUN go get -u github.com/go-redis/redis
+RUN go get -u github.com/gorilla/mux
+RUN go get -u github.com/gorilla/websocket
+RUN go get -u github.com/jinzhu/gorm
+RUN go get -u github.com/jinzhu/gorm/dialects/postgres
+
 COPY ./start /start
 RUN chmod +x /start
 WORKDIR /app

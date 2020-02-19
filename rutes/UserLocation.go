@@ -18,11 +18,13 @@ func (c *RedisClient) AddUserLocation(id string, lat, lng float64) {
 }
 
 func (c *RedisClient) DeleteUserLocation(id string) {
+
 	c.ZRem(key, id)
 
 }
 
 func (c *RedisClient) SearchUsers(limit int, lat, lng float64, radius float64) []redis.GeoLocation {
+	//search all close users
 	res, _ := c.GeoRadius(key, lat, lng, &redis.GeoRadiusQuery{
 		Radius:      radius,
 		Unit:        "km",

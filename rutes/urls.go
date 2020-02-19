@@ -13,6 +13,6 @@ func Router() *mux.Router {
 	r.HandleFunc("/searchusers", SearchUserLocation).Methods("POST")
 	r.HandleFunc("/deleteloc", DeleteLocationUser).Methods("DELETE")
 	r.HandleFunc("/newrace", NewRace).Methods("Post")
-	r.HandleFunc("/ws/{id_race}/{token}", HandleConnections)
+	r.HandleFunc("/ws/{id_race}/{token}", HandleConnections) //websocket endpoint
 	return r
 }
