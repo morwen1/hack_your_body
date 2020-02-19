@@ -15,7 +15,14 @@ from hyk.users.models import Profile, User
 
 class UserViewset(GenericViewSet):
     """
-    el ñoco
+    Login
+        methods : POST
+        return: token and user
+    
+    Signup(register user) :
+        methods : Post 
+        return : user registered
+
     """
     def get_serializer_class (self ):
         if self.action == 'login' :
