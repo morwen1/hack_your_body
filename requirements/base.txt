@@ -29,7 +29,7 @@ channels
 channels-redis
 pandas
 PyJWT
-djangorestframework-simplejwt==4.3.0
+djangorestframework-simplejwt==5.5.1
 djangorestframework-recursive
 django-filter
 django-filters
